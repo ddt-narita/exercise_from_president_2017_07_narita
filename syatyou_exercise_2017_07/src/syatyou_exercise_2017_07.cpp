@@ -93,22 +93,18 @@ int main(int args, char** argv) {
 			companyName = buff;
 		}
 
-		if(buff.find("新川　隆") != string::npos) {
-
-			no++;
-			no--;
-
-		}
-
 		//NOTE:だったら会社名の読みを取得
 		if(buff.find("NOTE:",0) != string::npos) {
 			int start;
 			if((start = buff.find("社名読み", 0) + 14) != 13) {
 				buff.erase(0, start);
-				int mojinumber = buff.find("nグループ") - 1;
-				char spelltemp[256] = "";
-				buff.copy(spelltemp, mojinumber, 0);
-				companySpell = spelltemp;
+
+				unsigned int mojinumber;
+				char spelltemp[256] = {0};
+				if((mojinumber = buff.find("\\n")) != string::npos) {
+					buff.copy(spelltemp, mojinumber, 0);
+					companySpell = spelltemp;
+				}
 			}
 		}
 
