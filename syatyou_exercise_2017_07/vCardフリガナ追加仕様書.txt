@@ -1,0 +1,87 @@
+vCard「フリガナ」追加プログラム
+
+　本プログラムはアドレス帳フォーマットである「vCard形式」ファイルを修正するプログラムである。以下に示す、修正前データを元にフリガナを追加する。尚、以下のフォーマットは一つのファイルに登録した名刺分繰り返し存在する。個数の制限はなく個数情報はファイル内には存在しない。
+
+【修正前データ】
+
+BEGIN:VCARD
+VERSION:3.0
+FN:細井延明
+N:細井;延明;;;
+X-PHONETIC-FIRST-NAME:ノブアキ
+X-PHONETIC-LAST-NAME:ホソイ
+item1.EMAIL;TYPE=INTERNET:hosoi.nobuaki@genetec.co.jp
+item1.X-ABLabel:電子メール(A)
+item2.TEL:03-3357-3044
+item2.X-ABLabel:TEL1(A)
+item3.TEL:03-3354-6144
+item3.X-ABLabel:FAX(A)
+item4.TEL:03-3357-2879
+item4.X-ABLabel:TEL1(B)
+item5.ADR:;;新宿２－１９－１;新宿区;東京都;160-0022;
+item5.X-ABLabel:住所1(A)
+item6.ADR:;;ビッグス新宿ビル５Ｆ;;;;
+item6.X-ABLabel:住所2(A)
+ORG:株式会社ゼネテック
+TITLE:システム管理担当課長
+item7.URL:https\://drive.google.com/file/d/0Bxs3dNWio2ufNUpsUkxhdFZ0MGc/view
+item7.X-ABLabel:表面画像
+NOTE:所属: 技術管理部\n社名読み: ゼネテック\nグループ: グループ未設定\n面会日: 2017/06/16\n敬称: 様
+END:VCARD
+
+
+【修正後データ】
+　＊修正箇所については修正後データに「←」を付けている。
+
+
+BEGIN:VCARD
+VERSION:3.0
+FN:細井延明　←
+N:ゼネテック）細井;延明;;;
+SORT-STRING:ゼネテック ホソイ ノブアキ 　←
+X-PHONETIC-FIRST-NAME:ノブアキ
+X-PHONETIC-LAST-NAME:ゼネテック）ホソイ　←
+item1.EMAIL;TYPE=INTERNET:hosoi.nobuaki@genetec.co.jp
+item1.X-ABLabel:電子メール(A)
+item2.TEL:03-3357-3044
+item2.X-ABLabel:TEL1(A)
+item3.TEL:03-3354-6144
+item3.X-ABLabel:FAX(A)
+item4.TEL:03-3357-2879
+item4.X-ABLabel:TEL1(B)
+item5.ADR:;;新宿２－１９－１;新宿区;東京都;160-0022;
+item5.X-ABLabel:住所1(A)
+item6.ADR:;;ビッグス新宿ビル５Ｆ;;;;
+item6.X-ABLabel:住所2(A)
+ORG:株式会社ゼネテック
+TITLE:システム管理担当課長
+item7.URL:https\://drive.google.com/file/d/0Bxs3dNWio2ufNUpsUkxhdFZ0MGc/view
+item7.X-ABLabel:表面画像
+NOTE:所属: 技術管理部\n社名読み: ゼネテック\nグループ: グループ未設定\n面会日: 2017/06/16\n敬称: 様
+END:VCARD
+
+
+１．修正仕様を以下に示す。
+
+　１－１．会社名を付加する。
+　　ａ）抽出先タグ
+　　　ORG:株式会社ゼネテック
+
+　　ｂ）結果
+　　　N:細井;延明;;;
+　　　　↓
+　　　N:ゼネテック）細井;延明;;;
+
+　１－２．ソート文字列タグを追加する。
+
+　　ａ）抽出先タグ
+　　　X-PHONETIC-FIRST-NAME:ノブアキ
+　　　X-PHONETIC-LAST-NAME:ホソイ　
+　　　NOTE:所属: 技術管理部\n社名読み: ゼネテック　・・・
+
+　　ｂ）結果
+　　　SORT-STRING:ゼネテック）ノブアキ ホソイ
+　　　X-PHONETIC-FIRST-NAME:ノブアキ
+　　　X-PHONETIC-LAST-NAME:ゼネテック）ホソイ　
+
+以上

@@ -1,0 +1,150 @@
+
+#include <iostream>
+#include <fstream>
+#include <cctype>
+#include <iomanip>
+#include <string.h>
+#include <stdio.h>
+#include <string>
+
+using namespace std;
+
+char* str2char(char* dest, const std::string& src, size_t num) {
+    strncpy(dest, src.c_str(), num-1);
+    *(dest+num-1) = '\0';
+    return dest;
+}
+
+
+
+int main() {
+
+	const char* p = "contacts.vcf";
+	string s = "output.txt";
+	ifstream ifs(p, ios_base::binary);
+	ofstream ofs(s, ios_base::binary);
+
+	if(!ifs) {
+		cout << "オープン失敗";
+	}
+	if(!ofs) {
+		cout << "オープン失敗";
+	}
+
+//	string a;
+//	while(getline(ifs, a)) {
+//		ofs << a;
+//	}
+
+
+	char buff[256];
+//	string buff;				//一行ずつ読みこんでいくためのバッファ
+//	string addressData[50];		//フォーマット
+//	string companyName;
+//	string firstname;
+//	string lastname;
+//	string companySpell;
+
+	const int FORMAT_NAME = 3;
+	const int FORMAT_SORT = 4;
+	const int FORMAT_LASTNAME = 6;
+
+//	for(int i  = 0; i < 50; i++) {
+//		addressData[i] = "0";
+//	}
+
+	int no = 0;
+
+	int i = 0;
+
+	while(ifs.getline(buff,255)) {
+
+
+
+		//名前の読みが始まる前にソートの読みの分を開けておく
+		if(("X-PHONETIC-FIRST-NAME:",0) != string::npos) {
+			addressData[i] += "SORT-STRING:";
+			i++;
+		}
+
+		addressData[i] = buff;
+
+
+		//ORG:だったら会社名を取得
+		if(buff.find("ORG:",0) != string::npos) {
+			string::size_type start = 0;
+			string::size_type t = 0;
+			string::size_type number = 4;
+			buff.erase(start,number);
+			while((t = buff.find("株式会社",0)) != string::npos) {
+				number = 8;
+				buff.erase(t,number);
+			}
+			companyName = buff;
+
+		}
+
+		//NOTE:だったら会社名の読みを取得
+		if(buff.find("NOTE:",0) != string::npos) {
+
+			int start = buff.find("読み",0) + 10;
+
+			char spelltemp[60];
+			buff.copy(spelltemp, 50, start);
+			companySpell = spelltemp;
+		}
+
+		//名前の読みを取得
+		if(buff.find("X-PHONETIC-FIRST-NAME:",0) != string::npos) {
+			char firstnametemp[30];
+			buff.copy(firstnametemp, 12, 22);
+			firstname = firstnametemp;
+		}
+
+		//苗字の読みを取得
+		if(buff.find("X-PHONETIC-LAST-NAME:",0) != string::npos) {
+			char lastnametemp[31];
+			buff.copy(lastnametemp, 12, 21);
+			lastname = lastnametemp;
+		}
+
+
+
+
+		//最後まで来た時
+		if(addressData[i].find("END:VCARD",0) != string::npos) {
+
+			companyName += ")";
+			companySpell += ")";
+			firstname += " ";
+
+			//名前に会社名追加
+			addressData[FORMAT_NAME].insert(2, companyName);
+
+			//名前読みに会社読みを追加
+			addressData[FORMAT_LASTNAME].insert(21, companySpell);
+
+			string temp = companySpell  + firstname + lastname + "\n";
+			//ソートに会社読み、名前、苗字を追加する
+			addressData[FORMAT_SORT] += temp;
+
+			for(int j = 0; j <= i; j++) {
+				ofs << addressData[j] << endl;
+			}
+
+			for(int j = 0; j < 50; j++) {
+				addressData[j] = "0";
+			}
+
+			i = -1;
+			no++;
+		}
+
+		i++;
+
+	}
+
+	return 0;
+
+
+}
